@@ -1,8 +1,11 @@
+import 'package:clean_flutter_base/presentation/feature/test/test_cubit.dart';
 import 'package:clean_flutter_base/presentation/feature/test/test_screen.dart';
 import 'package:clean_flutter_base/presentation/main/main_cubit.dart';
 import 'package:clean_flutter_base/presentation/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'common/di/get_it.dart';
 
 class MyApp extends StatelessWidget {
   final AppRouter appRouter;
@@ -26,7 +29,11 @@ class MyApp extends StatelessWidget {
             home: BlocBuilder<MainCubit, MainState>(
               builder: (context, state) {
                 return state.when(
-                  done: () => const TestScreen(),
+                  done:
+                      () => BlocProvider<TestCubit>(
+                        create: (context) => getIt(),
+                        child: TestScreen(),
+                      ),
                   loading:
                       () => const Scaffold(
                         body: Center(child: CircularProgressIndicator()),
