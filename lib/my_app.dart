@@ -1,46 +1,65 @@
-import 'package:clean_flutter_base/presentation/feature/test/test_cubit.dart';
-import 'package:clean_flutter_base/presentation/feature/test/test_screen.dart';
+import 'package:clean_flutter_base/presentation/lang/app_localization.dart';
+import 'package:clean_flutter_base/presentation/lang/lang_cubit.dart';
+import 'package:clean_flutter_base/presentation/lang/lang_state.dart';
 import 'package:clean_flutter_base/presentation/main/main_cubit.dart';
-import 'package:clean_flutter_base/presentation/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 import 'common/di/get_it.dart';
 
 class MyApp extends StatelessWidget {
-  final AppRouter appRouter;
+  final GoRouter appRouter;
 
   const MyApp({super.key, required this.appRouter});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MainCubit(),
-      child: BlocBuilder<MainCubit, MainState>(
-        builder: (context, state) {
-          return MaterialApp(
-            title: 'Core App',
-            theme: ThemeData(
-              primaryColor: Colors.teal,
-              scaffoldBackgroundColor: Colors.white,
-            ),
-            debugShowCheckedModeBanner: false,
-            onGenerateRoute: appRouter.generateRoute,
-            home: BlocBuilder<MainCubit, MainState>(
-              builder: (context, state) {
-                return state.when(
-                  done:
-                      () => BlocProvider<TestCubit>(
-                        create: (context) => getIt(),
-                        child: TestScreen(),
-                      ),
-                  loading:
-                      () => const Scaffold(
-                        body: Center(child: CircularProgressIndicator()),
-                      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => MainCubit()),
+        BlocProvider<LangCubit>(create: (context) => getIt()),
+      ],
+      child: BlocBuilder<LangCubit, LangState>(
+        builder: (context, langState) {
+          return BlocBuilder<MainCubit, MainState>(
+            builder: (context, mainState) {
+              if (mainState is MainStateDone && langState is LangLoaded) {
+                return MaterialApp.router(
+                  locale: Locale(langState.lang),
+                  supportedLocales: const [Locale('en'), Locale('ar')],
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                  ],
+                  title: 'Core App',
+                  theme: ThemeData(
+                    primaryColor: Colors.teal,
+                    scaffoldBackgroundColor: Colors.white,
+                  ),
+                  debugShowCheckedModeBanner: false,
+                  routerConfig: appRouter,
+                    localeResolutionCallback: (deviceLocale, supportedLocales) {
+                      for (var locale in supportedLocales) {
+                        if (deviceLocale != null &&
+                            deviceLocale.languageCode == locale.languageCode) {
+                          return deviceLocale;
+                        }
+                      }
+                      return supportedLocales.first;
+                    }
                 );
-              },
-            ),
+              } else {
+                return MaterialApp(
+                  home: Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  ),
+                );
+              }
+            },
           );
         },
       ),

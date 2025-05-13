@@ -2,11 +2,11 @@ import '../../common/helpers/logging_helper.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserDataRepo {
+class LocalDataRepo {
   final SharedPreferences _sharedPrefs;
   final FlutterSecureStorage _storage;
 
-  UserDataRepo({
+  LocalDataRepo({
     required SharedPreferences sharedPrefs,
     required FlutterSecureStorage storage,
   }) : _storage = storage,

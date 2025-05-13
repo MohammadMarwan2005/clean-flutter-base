@@ -2,17 +2,16 @@ part of 'main_cubit.dart';
 
 @freezed
 sealed class MainState with _$MainState {
-  const factory MainState.loading() = _Loading;
-
-  const factory MainState.done() = _Done;
+  const factory MainState.loading() = MainStateLoading;
+  const factory MainState.done() = MainStateDone;
 }
 
 extension Util on MainState {
   R when<R>({required R Function() done, required R Function() loading}) {
     switch (this) {
-      case _Done():
+      case MainStateDone():
         return done();
-      case _Loading():
+      case MainStateLoading():
         return loading();
     }
   }

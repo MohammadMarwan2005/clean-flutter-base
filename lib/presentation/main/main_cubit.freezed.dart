@@ -45,8 +45,8 @@ $MainStateCopyWith(MainState _, $Res Function(MainState) __);
 /// @nodoc
 
 
-class _Loading implements MainState {
-  const _Loading();
+class MainStateLoading implements MainState {
+  const MainStateLoading();
   
 
 
@@ -56,7 +56,7 @@ class _Loading implements MainState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainStateLoading);
 }
 
 
@@ -77,8 +77,8 @@ String toString() {
 /// @nodoc
 
 
-class _Done implements MainState {
-  const _Done();
+class MainStateDone implements MainState {
+  const MainStateDone();
   
 
 
@@ -88,7 +88,7 @@ class _Done implements MainState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Done);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MainStateDone);
 }
 
 

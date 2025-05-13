@@ -12,5 +12,5 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  runApp(MyApp(appRouter: AppRouter()));
+  runApp(MyApp(appRouter: appRouter));
 }
